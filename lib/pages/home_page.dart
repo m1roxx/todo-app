@@ -18,7 +18,9 @@ class _HomePageState extends State<HomePage> {
   void addNewTask() {
     
     setState(() {
-      toDoList.add([_controller.text, false]);
+      if (_controller.text != "") {
+        toDoList.add([_controller.text, false]);
+      }
       _controller.clear();
     });
     Navigator.of(context).pop();
@@ -76,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Center(
           child: Text(
-            "To Do",
+            "TO DO",
             style: TextStyle(
               color: Colors.black,
             ),
@@ -102,6 +104,8 @@ class _HomePageState extends State<HomePage> {
             onRemove: () => removeTask(index),
             onEdit: () => editTask(index),
             onChanged:(value) => checkBoxChanged(value, index),
+            deleteFunction: (context) => removeTask(index),
+            editFunction: (context) => editTask(index),
           );
         },
       )
