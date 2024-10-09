@@ -5,7 +5,9 @@ class TodoTile extends StatelessWidget {
   final String task;
   final VoidCallback onRemove;
   final VoidCallback onEdit;
+  final VoidCallback onFavorite;
   final bool taskCompleted;
+  final bool isFavorite;
   final Function(bool?)? onChanged;
   final Function(BuildContext)? deleteFunction;
   final Function(BuildContext)? editFunction;
@@ -15,7 +17,9 @@ class TodoTile extends StatelessWidget {
     required this.task, 
     required this.onRemove, 
     required this.onEdit,
+    required this.onFavorite,
     required this.taskCompleted,
+    required this.isFavorite,
     required this.onChanged,
     required this.deleteFunction,
     required this.editFunction,
@@ -32,7 +36,8 @@ class TodoTile extends StatelessWidget {
             SlidableAction(
               onPressed: editFunction,
               icon: Icons.edit,
-              backgroundColor: Colors.blue.shade300,
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blueAccent,
               borderRadius: BorderRadius.circular(12),
             )
           ]
@@ -51,7 +56,7 @@ class TodoTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: Colors.green[400],
+            color: Colors.grey[300],
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -62,7 +67,7 @@ class TodoTile extends StatelessWidget {
                   Checkbox(
                     value: taskCompleted, 
                     onChanged: onChanged,
-                    activeColor: Colors.green[900],
+                    activeColor: Colors.blueAccent,
                     shape: const CircleBorder(),
                   ),
                   
@@ -78,30 +83,45 @@ class TodoTile extends StatelessWidget {
                 ],
               ),
         
-        
-              PopupMenuButton(
-                color: Colors.green[200],
-                icon: const Icon(Icons.more_vert),
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: "edit",
-                    child: Text("Edit"),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: onFavorite, 
+                    icon: Icon(
+                      isFavorite 
+                        ? Icons.star
+                        : Icons.star_border,
+                      color: isFavorite
+                        ? Colors.blueAccent
+                        : Colors.grey[800],
+                    )
                   ),
-        
-                  const PopupMenuItem(
-                    value: "delete",
-                    child: Text("Delete"),
-                  )
+
+                  PopupMenuButton(
+                    color: Colors.white,
+                    icon: const Icon(Icons.more_vert),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: "edit",
+                        child: Text("Edit"),
+                      ),
+                          
+                      const PopupMenuItem(
+                        value: "delete",
+                        child: Text("Delete"),
+                      )
+                    ],
+                          
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEdit();
+                      } 
+                      else if (value == 'delete') {
+                        onRemove();
+                      }
+                    },
+                  ),
                 ],
-        
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    onEdit();
-                  } 
-                  else if (value == 'delete') {
-                    onRemove();
-                  }
-                },
               ),
             ],
           ),

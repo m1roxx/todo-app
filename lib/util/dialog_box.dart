@@ -18,7 +18,14 @@ class DialogBox extends StatelessWidget {
     return AlertDialog(
       content: TextField(
         controller: controller,
-        decoration: const InputDecoration(hintText: "Enter task"), 
+        decoration: const InputDecoration(
+          hintText: "Enter task", 
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black)
+          )
+        ), 
+        cursorColor: Colors.black,
+        cursorErrorColor: Colors.black,
       ),
       actions: [
         TextButton(
@@ -26,7 +33,8 @@ class DialogBox extends StatelessWidget {
           child: const Text(
             "Save",
             style: TextStyle(
-              color: Colors.black
+              color: Colors.blueAccent,
+              
             ),  
           ),
         ),
@@ -36,12 +44,12 @@ class DialogBox extends StatelessWidget {
           child: const Text(
             "Cancel",
             style: TextStyle(
-              color: Colors.black
+              color: Colors.blueAccent,
             ),
           )
         ),
       ],
-      backgroundColor: Colors.green[200],
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:practice_todo_app/tabs/favorites_tab.dart';
+import 'package:practice_todo_app/tabs/tasks_tab.dart';
 import 'package:practice_todo_app/util/dialog_box.dart';
 import 'package:practice_todo_app/util/todo_tile.dart';
 
@@ -15,11 +17,15 @@ class _HomePageState extends State<HomePage> {
 
   List toDoList = [];
 
+  List getFavoriteTasks() {
+    return toDoList.where((task) => task[2] == true).toList();
+  } 
+
   void addNewTask() {
     
     setState(() {
       if (_controller.text != "") {
-        toDoList.add([_controller.text, false]);
+        toDoList.add([_controller.text, false, false]);
       }
       _controller.clear();
     });
@@ -71,44 +77,83 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void markFavorite(int index) {
+    setState(() {
+      toDoList[index][2] = !toDoList[index][2];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.green[200],
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "TO DO",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-            ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "Tasks",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+              ),
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.green[400],
-      ),
+      
+        floatingActionButton: FloatingActionButton(
+          onPressed: createNewTask, 
+          backgroundColor: Colors.white,
+          elevation: 20,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
+      
+        body: Column(
+          children: [
+            TabBar(
+              tabs: [
+                Tab(
+                  text: "Tasks",
+                  
+                ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask, 
-        backgroundColor: Colors.green[500],
-        elevation: 0,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
-      ),
+                Tab(
+                  icon: Icon(Icons.star),
+                )
+              ] 
+              
+            ),
 
-      body: ListView.builder(
-        itemCount: toDoList.length,
-        itemBuilder:(context, index) {
-          return TodoTile(
-            task: toDoList[index][0],
-            taskCompleted: toDoList[index][1],
-            onRemove: () => removeTask(index),
-            onEdit: () => editTask(index),
-            onChanged:(value) => checkBoxChanged(value, index),
-            deleteFunction: (context) => removeTask(index),
-            editFunction: (context) => editTask(index),
-          );
-        },
-      )
+            Expanded(
+              child: TabBarView(
+                children: [
+                  // Tasks tab
+                  TasksTab(
+                    toDoList: toDoList, 
+                    markFavorite: markFavorite, 
+                    removeTask: removeTask, 
+                    editTask: editTask, 
+                    checkBoxChanged: checkBoxChanged
+                  ),
+              
+                  // Favorites tab
+                  FavoritesTab(
+                    favoriteTasks: getFavoriteTasks(), 
+                    markFavorite: markFavorite, 
+                    removeTask: removeTask, 
+                    editTask: editTask, 
+                    checkBoxChanged: checkBoxChanged
+                  ),
+                  
+                ]
+              ),
+            ),
+
+            
+          ],
+        )
+      ),
     );
   }
 }
