@@ -1,10 +1,9 @@
 # Todo App
 
-A simple Todo app built with Flutter, allowing users to add, edit, delete, and mark tasks as complete.
-
+A simple Todo app built with Flutter.
 ## Features
 
-- Add, edit, and delete tasks
+- Add, edit, mark as favorite and delete tasks
 - Mark tasks as complete/incomplete
 - Task actions via sliding tiles
 - Clean UI with Flutter Slidable package
