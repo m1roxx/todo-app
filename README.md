@@ -1,25 +1,5 @@
 # Todo App
 
-A simple Todo app built with Flutter.
-## Features
-
-- Add, edit, mark as favorite and delete tasks
-- Mark tasks as complete/incomplete
-- Task actions via sliding tiles
-- Clean UI with Flutter Slidable package
-
-## Project Structure
-
-```bash
-lib/
-├── main.dart                 # App entry point
-├── pages/
-│   └── home_page.dart         # HomePage widget
-├── util/
-│   └── dialog_box.dart        # Custom dialog for tasks
-│   └── todo_tile.dart         # Custom task tile widget
-```
-
 ## How to Run
 
 ### Clone the repository
@@ -33,7 +13,3 @@ lib/
 ### Run the app
 
 <pre><code>flutter run</code></pre>
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
