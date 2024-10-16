@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:practice_todo_app/data/database.dart';
 import 'package:practice_todo_app/tabs/favorites_tab.dart';
 import 'package:practice_todo_app/tabs/tasks_tab.dart';
 import 'package:practice_todo_app/util/dialog_box.dart';
-import 'package:practice_todo_app/util/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,30 +13,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _myBox = Hive.box("mybox");
+  ToDoDataBase db = ToDoDataBase();
+
+  @override
+  void initState() {
+    if (_myBox.get("TODOLIST") == null) {
+      db.createInitialData();
+    } else {
+      db.loadData();
+    }
+
+    super.initState();
+  }
 
   final TextEditingController _controller = TextEditingController();
 
-  List toDoList = [];
-
   List getFavoriteTasks() {
-    return toDoList.where((task) => task[2] == true).toList();
+    return db.toDoList.where((task) => task[2] == true).toList();
   } 
 
   void addNewTask() {
     
     setState(() {
       if (_controller.text != "") {
-        toDoList.add([_controller.text, false, false]);
+        db.toDoList.add([_controller.text, false, false]);
       }
       _controller.clear();
     });
     Navigator.of(context).pop();
+
+    db.updateDataBase();
   }
 
   void removeTask(int index) {
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+
+    db.updateDataBase();
   }
 
   void createNewTask() {
@@ -50,10 +66,12 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+
+    db.updateDataBase();
   }
 
   void editTask(int index) {
-    final TextEditingController _editController = TextEditingController(text: toDoList[index][0]);
+    final TextEditingController _editController = TextEditingController(text: db.toDoList[index][0]);
     showDialog(
       context: context, 
       builder: (context) {
@@ -62,25 +80,32 @@ class _HomePageState extends State<HomePage> {
         onCancel: () => Navigator.of(context).pop(), 
         onSave: () {
           setState(() {
-            toDoList[index][0] = _editController.text;
+            db.toDoList[index][0] = _editController.text;
           });
           Navigator.of(context).pop();
+          db.updateDataBase();
         },
         );
       }
     );
+
+    db.updateDataBase();
   }
 
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+
+    db.updateDataBase();
   }
 
   void markFavorite(int index) {
     setState(() {
-      toDoList[index][2] = !toDoList[index][2];
+      db.toDoList[index][2] = !db.toDoList[index][2];
     });
+
+    db.updateDataBase();
   }
 
   @override
@@ -130,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   // Tasks tab
                   TasksTab(
-                    toDoList: toDoList, 
+                    toDoList: db.toDoList, 
                     markFavorite: markFavorite, 
                     removeTask: removeTask, 
                     editTask: editTask, 
